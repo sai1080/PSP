@@ -67,16 +67,16 @@ public class HttpServer
 		
 		int count;
 		
-		while((count = fileInputStream.read(buffer)) !=-1 );
-			Thread.sleep(3000);//meter un retardo para ver varias peticiones
+		while((count = fileInputStream.read(buffer)) !=-1 ){
+			Thread.sleep(5000);//meter un retardo para ver varias peticiones
 			outputStream.write(buffer, 0, count);
-			
+		}
 		fileInputStream.close();
 		
 		socket.close();
+		
 		}
-		}
-		catch(Exception e){
+		}catch(Exception e){
 			System.err.println("Error"+ e.getMessage());
 			e.printStackTrace();
 		}
