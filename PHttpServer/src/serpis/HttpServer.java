@@ -9,6 +9,8 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HttpServer {
 	private static final String newLine = "\r\n";
@@ -47,9 +49,14 @@ public class HttpServer {
 			if (line.startsWith("GET")) { //GET /index.html HTTP/1.1
 				//fileName = line.split(" ")[1].substring(1); //->index.html
 				//fileName = line.substring(5, line.indexOf(" ", 5));
-				int index = 5;
-				while (line.charAt(index) != ' ') 
-					fileName += line.charAt(index++);  
+				
+				//int index = 5;
+				//while (line.charAt(index) != ' ') 
+					//fileName += line.charAt(index++);  
+				
+				Pattern pattern = Pattern.compile("GET (/?<fileName>.*) HTTP/1.[01]");
+				Matcher matcher = pattern.matcher(line);
+				fileName = matcher.group(1); //from 1.7
 					
 				System.out.println("fileName="+fileName);
 			}
