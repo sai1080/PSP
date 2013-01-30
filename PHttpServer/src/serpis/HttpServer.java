@@ -24,6 +24,10 @@ public class HttpServer {
 		final int port = 8080;
 		ServerSocket serverSocket = new ServerSocket(port);
 		
+	String threadName = Thread.currentThread().getName();
+	
+	System.out.println("threadName=" + threadName);
+		
 		while (true) {
 			Socket socket = serverSocket.accept();
 
@@ -36,34 +40,34 @@ public class HttpServer {
 		//serverSocket.close();
 	}
 	
-	//TODO implementar correctamente
+
 	private static String getFileName(InputStream inputStream) {
+		final String defaultFileName = "index.html";
+		
+		
 		Scanner scanner = new Scanner( inputStream );
-		
-		//String fileName = "index.html";
-		String fileName = "";
-		
+		String fileName = "";		
 		while (true) {
 			String line = scanner.nextLine();
-			System.out.println(line);
+			//System.out.println(line);
 			if (line.startsWith("GET")) { //GET /index.html HTTP/1.1
-				//fileName = line.split(" ")[1].substring(1); //->index.html
-				//fileName = line.substring(5, line.indexOf(" ", 5));
-				
+				//fileName = line.split(" ")[1].substring(1); //->index.html			
 				//int index = 5;
 				//while (line.charAt(index) != ' ') 
 					//fileName += line.charAt(index++);  
-				
-				Pattern pattern = Pattern.compile("GET (/?<fileName>.*) HTTP/1.[01]");
-				Matcher matcher = pattern.matcher(line);
-				fileName = matcher.group(1); //from 1.7
-					
-				System.out.println("fileName="+fileName);
+				fileName = line.substring(5, line.indexOf(" ", 5));					
+			
 			}
 			if (line.equals(""))
 				break;
 		}
+		
+		if(fileName.equals(""))
+			fileName = defaultFileName;	
+		System.out.println("fileName="+fileName);
 		return fileName;
+		//otra manera de hacer en vez del if
+		//return !fileName.equals("") ? fileName : defaultFileName;
 	}
 	
 	private static void writeHeader(OutputStream outputStream, String fileName) throws IOException {
