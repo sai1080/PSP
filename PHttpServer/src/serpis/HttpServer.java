@@ -24,82 +24,21 @@ public class HttpServer {
 		final int port = 8080;
 		ServerSocket serverSocket = new ServerSocket(port);
 		
-	String threadName = Thread.currentThread().getName();
+	//String threadName = Thread.currentThread().getName();	
+	//System.out.println("threadName=" + threadName);
 	
-	System.out.println("threadName=" + threadName);
 		
 		while (true) {
 			Socket socket = serverSocket.accept();
-
-			String fileName = getFileName(socket.getInputStream());
-			writeHeader(socket.getOutputStream(), fileName);
-			writeFile(socket.getOutputStream(), fileName);
-			socket.close();
+			
+			//SimpleServer.Process(socket);
+			
+			Runnable runnable = new ThreadServer();
+			Thread thread =new Thread(runnable);
+			thread.start();
+			
 		}
 		
 		//serverSocket.close();
-	}
 	
-
-	private static String getFileName(InputStream inputStream) {
-		final String defaultFileName = "index.html";
-		
-		
-		Scanner scanner = new Scanner( inputStream );
-		String fileName = "";		
-		while (true) {
-			String line = scanner.nextLine();
-			//System.out.println(line);
-			if (line.startsWith("GET")) { //GET /index.html HTTP/1.1
-				//fileName = line.split(" ")[1].substring(1); //->index.html			
-				//int index = 5;
-				//while (line.charAt(index) != ' ') 
-					//fileName += line.charAt(index++);  
-				fileName = line.substring(5, line.indexOf(" ", 5));					
-			
-			}
-			if (line.equals(""))
-				break;
-		}
-		
-		if(fileName.equals(""))
-			fileName = defaultFileName;	
-		System.out.println("fileName="+fileName);
-		return fileName;
-		//otra manera de hacer en vez del if
-		//return !fileName.equals("") ? fileName : defaultFileName;
-	}
 	
-	private static void writeHeader(OutputStream outputStream, String fileName) throws IOException {
-		final String response200 = "HTTP/1.0 200 OK";
-		final String response404 = "HTTP/1.0 404 Not Found"; 
-		
-		File file = new File(fileName);
-		String response = file.exists() ? response200 : response404;
-		
-		String header = response + newLine + newLine;
-		byte[] headerBuffer = header.getBytes();
-		
-		outputStream.write(headerBuffer);
-	}
-	
-	private static void writeFile(OutputStream outputStream, String fileName) throws IOException {
-		final String fileNameError404 = "fileError404.html";
-
-		File file = new File(fileName);
-		String responseFileName = file.exists() ? fileName : fileNameError404;
-		
-		final int bufferSize = 2048;
-		byte[] buffer = new byte[bufferSize];
-
-		FileInputStream fileInputStream = new FileInputStream(responseFileName);
-		
-		int count;
-		
-		while ( (count = fileInputStream.read(buffer)) != -1 )
-			outputStream.write(buffer, 0, count);
-		
-		fileInputStream.close();
-	}
-
-}

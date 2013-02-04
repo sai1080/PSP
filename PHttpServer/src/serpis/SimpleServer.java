@@ -14,38 +14,13 @@ public class SimpleServer {
 	
 	private static final String newLine = "\r\n";
 	
-	public static void main(String[]args) throws IOException{
-		
-		final int port = 8080;
-		ServerSocket serverSocket = new ServerSocket(port);
-		
-		String threadName = Thread.currentThread().getName();//obtenemos el nombre del thread
-		System.out.println("threadName =" + threadName);
-				
-	
-	
-	try{
-			while(true)
-			{
-				Socket socket = serverSocket.accept();
-				
-				String fileName =  getFileName(socket.getInputStream());
-				//metodos para escribir la cabecera y el resto del archivo
-				writeHeader(socket.getOutputStream(), fileName);
-				writeFile(socket.getOutputStream(), fileName);
-				socket.close();
-			}
-		
-		}
-		catch(Exception e){
-			System.err.println("error: "+e.getMessage());
-			e.printStackTrace();
-		}
-		finally{
-			serverSocket.close();
+		public static void Process(Socket socket)throws IOException, InterruptedException{
+		String fileName = getFileName(socket.getInputStream());
+		writeHeader(socket.getOutputStream(), fileName);
+		writeFile(socket.getOutputStream(), fileName);
+		socket.close();
 		}
 	
-	}
 		private static String getFileName(InputStream inputStream){
 			
 			Scanner scanner = new Scanner(inputStream);
@@ -101,7 +76,7 @@ public class SimpleServer {
 			outputStream.write(headerBuffer);					
 		}
 		
-		private static void writeFile(OutputStream outputStream, String fileName) throws IOException{
+		private static void writeFile(OutputStream outputStream, String fileName) throws IOException, InterruptedException{
 			
 			 String fileNameError404 = " fileError 404";
 			 
@@ -117,13 +92,11 @@ public class SimpleServer {
 			
 			int count;
 			
-			while((count = fileInputStream.read(buffer)) != -1)
+			while((count = fileInputStream.read(buffer)) != -1){
+				System.out.print(Thread.currentThread().getName()+",");
+				Thread.sleep(1000);
 			outputStream.write(buffer, 0, count);
-			
-			fileInputStream.close();
-			
+			}
+			fileInputStream.close();		
 		}
-	
-	
-	
 }
