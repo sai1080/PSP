@@ -33,12 +33,12 @@ public class HttpServer {
 			
 			//SimpleServer.Process(socket);
 			
-			Runnable runnable = new ThreadServer();
+			Runnable runnable = new ThreadServer(socket);
 			Thread thread =new Thread(runnable);
 			thread.start();
 			
 		}
-		
+	}	
 		//serverSocket.close();
-	
+}
 	

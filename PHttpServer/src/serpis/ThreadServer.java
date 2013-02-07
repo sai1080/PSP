@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class ThreadServer  implements Runnable {
@@ -241,20 +242,21 @@ public class ThreadServer  implements Runnable {
 			System.out.println(Thread.currentThread().getName()+ "inicio.");
 			
 			try{
-			inputStream = socket.getInputStream();
-			outputStream = socket.getOutputStream();
-			getFileName();
-			getFileExists();
-			writeHeader();
-			writeFile();
-			
-			socket.close();
+				inputStream = socket.getInputStream();
+				outputStream = socket.getOutputStream();
+				getFileName();
+				getFileExists();
+				writeHeader();
+				writeFile();
+				
+				socket.close();
 			}
 			catch(IOException ex){			
 			}
 			catch(InterruptedException ex){				
 			}
-			
+			catch(NoSuchElementException ex){			
+			}
 			System.out.println(Thread.currentThread().getName()+ "fin.");
 		}
 
